@@ -1,29 +1,23 @@
 using UnityEngine;
-public class MovePlayer : MonoBehaviour
+
+public class Zad4 : MonoBehaviour
 {
-    public float speed = 8.0f;
-    Rigidbody rb;
-   
-    void Start()
-    {
-        rb = GetComponent<Rigidbody>();
-    }
+    public float jumpBoostMultiplier = 3f;
 
-    void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        
-    }
-    void FixedUpdate()
-    {
-        // pobranie wartości zmiany pozycji w danej osi
-        // wartości są z zakresu [-1, 1]
-        float mH = Input.GetAxis("Horizontal");
-        float mV = Input.GetAxis("Vertical");
-
-        // tworzymy wektor prędkości
-        Vector3 velocity = new Vector3(mH, 0, mV);
-        velocity = velocity.normalized * speed * Time.deltaTime;
-        // wykonujemy przesunięcie Rigidbody z uwzględnieniem sił fizycznych
-        rb.MovePosition(transform.position + velocity);
+        if (other.CompareTag("Player"))
+        {
+            MoveWithCharacterController player = other.GetComponent<MoveWithCharacterController>();
+            if (player != null)
+            {
+                player.BoostJump(jumpBoostMultiplier);
+            }
+        }
     }
 }
+/////// BostJump znajduje się wewątrz MoveWithCharacterController i wygląda tak:
+/// public void BoostJump(float multiplier)
+///{
+///    playerVelocity.y = Mathf.Sqrt(jumpHeight * -2.0f * gravityValue) * multiplier;
+///}

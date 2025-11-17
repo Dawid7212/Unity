@@ -1,38 +1,28 @@
 using UnityEngine;
 
-
 public class Zad2 : MonoBehaviour
 {
-    public float speed = 5f;               
-    private float startX;                 
-    private bool movingForward = true;    
+    public Transform player;           // referencja do gracza
+    public float openDistance = 3.0f; 
+    public float slideAmount = 2.0f;  
+    public float speed = 2.0f;        
+
+    private Vector3 closedPosition;
+    private Vector3 openPosition;
+    private bool isOpen = false;
 
     void Start()
     {
-        startX = transform.position.x;    
+        closedPosition = transform.position;
+        openPosition = closedPosition + Vector3.right * slideAmount;
     }
 
     void Update()
     {
-        float ruch = speed * Time.deltaTime;
+        float distanceToPlayer = Vector3.Distance(player.position, transform.position);
+        isOpen = distanceToPlayer < openDistance;
 
-        if (movingForward)
-        {
-            transform.position += Vector3.right * ruch;
-            if (transform.position.x >= startX + 10f)
-            {
-                movingForward = false;    
-                return;
-            }
-        }
-        else
-        {
-            transform.position += Vector3.left * ruch;
-            if (transform.position.x <= startX)
-            {
-                movingForward = true;      // powrót do startu, zmiana kierunku
-                return;
-            }
-        }
+        Vector3 targetPos = isOpen ? openPosition : closedPosition;
+        transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
     }
 }
